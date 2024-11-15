@@ -1,1 +1,227 @@
+COMBINATIONAL TESTBENCHES
 
+`timescale 1ns/1ps
+
+module combinational_circuits_tb;
+
+// Test Full Adder - Dataflow Style
+initial begin
+$display("Full Adder - Dataflow Style");
+logic a, b, cin;
+logic sum, cout;
+
+full_adder_dataflow uut (.a(a), .b(b), .cin(cin), .sum(sum), .cout(cout));
+
+for (integer i = 0; i < 8; i = i + 1) begin
+    {a, b, cin} = i;
+    #10 $display("a=%b, b=%b, cin=%b -> sum=%b, cout=%b", a, b, cin, sum, cout);
+end
+end
+
+// Test Full Adder - Structural Style
+initial begin
+$display("\nFull Adder - Structural Style");
+reg a, b, cin;
+wire sum, cout;
+
+full_adder_structural uut (.a(a), .b(b), .cin(cin), .sum(sum), .cout(cout));
+
+for (integer i = 0; i < 8; i = i + 1) begin
+    {a, b, cin} = i;
+    #10 $display("a=%b, b=%b, cin=%b -> sum=%b, cout=%b", a, b, cin, sum, cout);
+end
+end
+
+// Test Full Adder - Using Two Half Adders (Structural Style)
+initial begin
+$display("\nFull Adder - Using Two Half Adders");
+reg a, b, cin;
+wire sum, cout;
+
+full_adder_two_half_adders uut (.a(a), .b(b), .cin(cin), .sum(sum), .cout(cout));
+
+for (integer i = 0; i < 8; i = i + 1) begin
+    {a, b, cin} = i;
+    #10 $display("a=%b, b=%b, cin=%b -> sum=%b, cout=%b", a, b, cin, sum, cout);
+end
+end
+
+// Test Logic Gates
+initial begin
+$display("\nLogic Gates");
+reg a, b;
+wire and_out, or_out, not_out, nand_out, nor_out, xor_out, xnor_out;
+
+logic_gates uut (.a(a), .b(b), .and_out(and_out), .or_out(or_out), .not_out(not_out), .nand_out(nand_out), .nor_out(nor_out), .xor_out(xor_out), .xnor_out(xnor_out));
+
+for (integer i = 0; i < 4; i = i + 1) begin
+    {a, b} = i;
+    #10 $display("a=%b, b=%b -> and=%b, or=%b, not=%b, nand=%b, nor=%b, xor=%b, xnor=%b", 
+                 a, b, and_out, or_out, not_out, nand_out, nor_out, xor_out, xnor_out);
+end
+end
+
+// Test 4:1 Mux - Dataflow Style
+initial begin
+$display("\n4:1 Mux - Dataflow Style");
+reg [3:0] d;
+reg [1:0] sel;
+wire y;
+
+mux_4to1_dataflow uut (.d(d), .sel(sel), .y(y));
+
+for (integer i = 0; i < 16; i = i + 1) begin
+    {d, sel} = i;
+    #10 $display("d=%b, sel=%b -> y=%b", d, sel, y);
+end
+end
+
+// Test 4:1 Mux using 2:1 Mux
+initial begin
+$display("\n4:1 Mux - Structural Style");
+reg [3:0] d;
+reg [1:0] sel;
+wire y;
+
+mux_4to1_structural uut (.d(d), .sel(sel), .y(y));
+
+for (integer i = 0; i < 16; i = i + 1) begin
+    {d, sel} = i;
+    #10 $display("d=%b, sel=%b -> y=%b", d, sel, y);
+end
+end
+
+// Test Binary to Gray Code Converter
+initial begin
+$display("\nBinary to Gray Code Converter");
+reg [3:0] binary;
+wire [3:0] gray;
+
+binary_to_gray uut (.binary(binary), .gray(gray));
+
+for (integer i = 0; i < 16; i = i + 1) begin
+    binary = i;
+    #10 $display("binary=%b -> gray=%b", binary, gray);
+end
+end
+
+// Test Gray to Binary Code Converter
+initial begin
+$display("\nGray to Binary Code Converter");
+reg [3:0] gray;
+wire [3:0] binary;
+
+gray_to_binary uut (.gray(gray), .binary(binary));
+
+for (integer i = 0; i < 16; i = i + 1) begin
+    gray = i;
+    #10 $display("gray=%b -> binary=%b", gray, binary);
+end
+end
+
+endmodule
+`timescale 1ns/1ps
+
+module additional_circuits_tb;
+
+    // 11. Test Binary to Excess-3 Code Converter
+    initial begin
+        $display("Binary to Excess-3 Code Converter");
+        reg [3:0] binary;
+        wire [3:0] excess3;
+
+        binary_to_excess3 uut (.binary(binary), .excess3(excess3));
+
+        for (integer i = 0; i < 16; i = i + 1) begin
+            binary = i;
+            #10 $display("binary=%b -> excess3=%b", binary, excess3);
+        end
+    end
+
+    // 12. Test 4-bit Ripple Carry Adder
+    initial begin
+        $display("\n4-bit Ripple Carry Adder");
+        reg [3:0] a, b;
+        reg cin;
+        wire [3:0] sum;
+        wire cout;
+
+        ripple_carry_adder uut (.a(a), .b(b), .cin(cin), .sum(sum), .cout(cout));
+
+        for (integer i = 0; i < 16; i = i + 1) begin
+            a = i; b = 15 - i; cin = 0;
+            #10 $display("a=%b, b=%b, cin=%b -> sum=%b, cout=%b", a, b, cin, sum, cout);
+        end
+    end
+
+    // 13. Test 4 to 2 Priority Encoder
+    initial begin
+        $display("\n4 to 2 Priority Encoder");
+        reg [3:0] in;
+        wire [1:0] out;
+        wire valid;
+
+        priority_encoder_4to2 uut (.in(in), .out(out), .valid(valid));
+
+        for (integer i = 0; i < 16; i = i + 1) begin
+            in = i;
+            #10 $display("in=%b -> out=%b, valid=%b", in, out, valid);
+        end
+    end
+
+    // 14. Test 8 to 3 Priority Encoder with Valid Bit
+    initial begin
+        $display("\n8 to 3 Priority Encoder with Valid Bit");
+        reg [7:0] in;
+        wire [2:0] out;
+        wire valid;
+
+        priority_encoder_8to3 uut (.in(in), .out(out), .valid(valid));
+
+        for (integer i = 0; i < 256; i = i + 1) begin
+            in = i;
+            #10 $display("in=%b -> out=%b, valid=%b", in, out, valid);
+        end
+    end
+
+    // 15. Test 3 to 8 Decoder
+    initial begin
+        $display("\n3 to 8 Decoder");
+        reg [2:0] in;
+        wire [7:0] out;
+
+        decoder_3to8 uut (.in(in), .out(out));
+
+        for (integer i = 0; i < 8; i = i + 1) begin
+            in = i;
+            #10 $display("in=%b -> out=%b", in, out);
+        end
+    end
+
+    // 16. Test 2 to 4 Decoder
+    initial begin
+        $display("\n2 to 4 Decoder");
+        reg [1:0] in;
+        wire [3:0] out;
+
+        decoder_2to4 uut (.in(in), .out(out));
+
+        for (integer i = 0; i < 4; i = i + 1) begin
+            in = i;
+            #10 $display("in=%b -> out=%b", in, out);
+        end
+    end
+
+    // 18. Test Full Adder using 4:1 Mux
+    initial begin
+        $display("\nFull Adder using 4:1 Mux");
+        reg a, b, cin;
+        wire sum, cout;
+
+        full_adder_using_mux uut (.a(a), .b(b), .cin(cin), .sum(sum), .cout(cout));
+
+        for (integer i = 0; i < 8; i = i + 1) begin
+            {a, b, cin} = i;
+            #10 $display("a=%b, b=%b, cin=%b -> sum=%b, cout=%b", a, b, cin, sum, cout);
+        end
+    end
