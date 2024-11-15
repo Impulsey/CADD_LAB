@@ -1,4 +1,4 @@
-COMBINATIONAL CODES 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~COMBINATIONAL CODES~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 
 // 1. Full Adder - Dataflow Style
 module full_adder_dataflow (
