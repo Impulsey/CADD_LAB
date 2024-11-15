@@ -225,3 +225,50 @@ module additional_circuits_tb;
             #10 $display("a=%b, b=%b, cin=%b -> sum=%b, cout=%b", a, b, cin, sum, cout);
         end
     end
+
+    // 22. Test Tristate Buffer
+    initial begin
+        $display("\nTristate Buffer");
+        reg a, enable;
+        wire z;
+
+        tristate_buffer uut (.a(a), .enable(enable), .z(z));
+
+        for (integer i = 0; i < 4; i = i + 1) begin
+            {a, enable} = i;
+            #10 $display("a=%b, enable=%b -> z=%b", a, enable, z);
+        end
+    end
+
+    // 23. Test Binary Multiplier
+    initial begin
+        $display("\nBinary Multiplier");
+        reg [3:0] a, b;
+        wire [7:0] product;
+
+        binary_multiplier uut (.a(a), .b(b), .product(product));
+
+        for (integer i = 0; i < 16; i = i + 1) begin
+            a = i; b = 16 - i;
+            #10 $display("a=%b, b=%b -> product=%b", a, b, product);
+        end
+    end
+
+endmodule
+`timescale 1ns/1ps
+
+module additional_circuits_2_tb;
+
+    // 24. Test Full Adder with 3 to 8 Decoder
+    initial begin
+        $display("Full Adder with 3 to 8 Decoder");
+        reg a, b, cin;
+        wire sum, cout;
+
+        full_adder_with_decoder uut (.a(a), .b(b), .cin(cin), .sum(sum), .cout(cout));
+
+        for (integer i = 0; i < 8; i = i + 1) begin
+            {a, b, cin} = i;
+            #10 $display("a=%b, b=%b, cin=%b -> sum=%b, cout=%b", a, b, cin, sum, cout);
+        end
+    end
