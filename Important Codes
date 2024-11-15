@@ -205,3 +205,32 @@ module full_adder_using_mux (
     assign cout = cout_mux_data[{a, b}];
 endmodule
 
+// 22. Tristate Buffer
+module tristate_buffer1 (
+    input a, enable,
+    output z
+);
+    assign z = enable ? a : 1'bz;
+endmodule
+
+// 23. Binary Multiplier
+module binary_multiplier (
+    input [3:0] a, b,
+    output [7:0] product
+);
+    assign product = a * b;
+endmodule
+// 24. Full Adder with 3 to 8 Decoder
+module full_adder_with_decoder (
+    input a, b, cin,
+    output sum, cout
+);
+    wire [7:0] decoder_out;
+    wire [2:0] decoder_in = {a, b, cin};
+
+    decoder_3to8 decoder (.in(decoder_in), .out(decoder_out));
+
+    assign sum = decoder_out[1] | decoder_out[2] | decoder_out[4] | decoder_out[7];
+    assign cout = decoder_out[3] | decoder_out[5] | decoder_out[6] | decoder_out[7];
+endmodule
+
