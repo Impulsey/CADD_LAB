@@ -1,4 +1,4 @@
-COMBINATIONAL TESTBENCHES
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~COMBINATIONAL TESTBENCHES~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 `timescale 1ns/1ps
 
@@ -272,3 +272,122 @@ module additional_circuits_2_tb;
             #10 $display("a=%b, b=%b, cin=%b -> sum=%b, cout=%b", a, b, cin, sum, cout);
         end
     end
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~SEQUENTIAL TESTBENCH~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+module testbench;
+
+// Declare inputs and outputs for the modules
+reg clk, reset, d, s, r, j, k, t, en, up;
+reg [3:0] count_in;
+wire q, qn, out;
+wire [3:0] count;
+
+// Clock generation
+always begin
+    clk = ~clk;
+    #5;
+end
+
+// Test D Latch (Dataflow Style)
+initial begin
+    clk = 0;
+    reset = 0;
+    d = 0;
+    #10;
+    d = 1;
+    #10;
+    d = 0;
+    #10;
+    reset = 1;
+    #10;
+    reset = 0;
+end
+
+// Test SR Latch (Dataflow Style)
+initial begin
+    s = 0; r = 0;
+    #10;
+    s = 1; r = 0;  // Set
+    #10;
+    s = 0; r = 1;  // Reset
+    #10;
+    s = 0; r = 0;  // Hold
+end
+
+// Test D Flip-Flop (Dataflow Style)
+initial begin
+    reset = 0;
+    d = 0;
+    #10;
+    d = 1;
+    #10;
+    reset = 1;
+    #10;
+    reset = 0;
+end
+
+// Test SR Flip-Flop (Dataflow Style)
+initial begin
+    s = 0; r = 0;
+    #10;
+    s = 1; r = 0;  // Set
+    #10;
+    s = 0; r = 1;  // Reset
+    #10;
+    s = 0; r = 0;  // Hold
+end
+
+// Test JK Flip-Flop (Dataflow Style)
+initial begin
+    j = 0; k = 0;
+    #10;
+    j = 1; k = 0;  // Set
+    #10;
+    j = 0; k = 1;  // Reset
+    #10;
+    j = 1; k = 1;  // Toggle
+    #10;
+end
+
+// Test T Flip-Flop (Dataflow Style)
+initial begin
+    t = 0;
+    #10;
+    t = 1; // Toggle
+    #10;
+    t = 0;
+end
+
+// Test FFs with Synchronous Reset
+initial begin
+    d = 0;
+    reset = 0;
+    #10;
+    d = 1;
+    #10;
+    reset = 1;
+    #10;
+    reset = 0;
+end
+
+// Test FFs with Asynchronous Reset
+initial begin
+    d = 0;
+    reset = 0;
+    #10;
+    d = 1;
+    #10;
+    reset = 1;
+    #10;
+    reset = 0;
+end
+
+// Test Enabled FFs and Latches
+initial begin
+    d = 0;
+    en = 0;
+    #10;
+    en = 1;
+    #10;
+    en = 0;
+end
