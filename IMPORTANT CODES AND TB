@@ -704,6 +704,7 @@ module tb_full_adder_with_decoder;
 endmodule
 
 // 31. D Latch, SR Latch – Dataflow Style, Structural Style
+
 // D Latch – Dataflow Style
 module d_latch_dataflow (
     input d, clk,
@@ -712,6 +713,27 @@ module d_latch_dataflow (
     always @ (clk or d) begin
         if (clk)
             q = d;
+    end
+endmodule
+
+// Testbench for D Latch – Dataflow Style
+module tb_d_latch_dataflow;
+    reg d, clk;
+    wire q;
+    
+    d_latch_dataflow uut (d, clk, q);
+    
+    initial begin
+        clk = 0;
+        forever #5 clk = ~clk;
+    end
+    
+    initial begin
+        d = 0;
+        #10 d = 1;
+        #10 d = 0;
+        #10 d = 1;
+        #20 $finish;
     end
 endmodule
 
@@ -731,32 +753,23 @@ module sr_latch_dataflow (
     assign nq = ~q;
 endmodule
 
-// D Latch – Structural Style
-module d_latch_structural (
-    input d, clk,
-    output q
-);
-    wire nclk, n_d;
+// Testbench for SR Latch – Dataflow Style
+module tb_sr_latch_dataflow;
+    reg s, r;
+    wire q, nq;
     
-    not (nclk, clk);
-    not (n_d, d);
+    sr_latch_dataflow uut (s, r, q, nq);
     
-    and (q, d, clk);
-    and (nq, n_d, nclk);
+    initial begin
+        s = 0; r = 0;
+        #10 s = 1; r = 0;
+        #10 s = 0; r = 1;
+        #10 s = 0; r = 0;
+        #20 $finish;
+    end
 endmodule
 
-// SR Latch – Structural Style
-module sr_latch_structural (
-    input s, r,
-    output q, nq
-);
-    nor (q, s, nq);
-    nor (nq, r, q);
-endmodule
-
-// 32. D FF, SR FF, JK FF, T FF – Dataflow Style, Structural Style, Behavioural Style
-
-// D Flip-Flop – Dataflow Style
+// D FF – Dataflow Style
 module d_ff_dataflow (
     input d, clk, reset,
     output reg q
@@ -769,169 +782,24 @@ module d_ff_dataflow (
     end
 endmodule
 
-// SR Flip-Flop – Dataflow Style
-module sr_ff_dataflow (
-    input s, r, clk, reset,
-    output reg q
-);
-    always @(posedge clk or posedge reset) begin
-        if (reset)
-            q <= 1'b0;
-        else if (s && !r)
-            q <= 1'b1;
-        else if (!s && r)
-            q <= 1'b0;
+// Testbench for D FF – Dataflow Style
+module tb_d_ff_dataflow;
+    reg d, clk, reset;
+    wire q;
+    
+    d_ff_dataflow uut (d, clk, reset, q);
+    
+    initial begin
+        clk = 0;
+        forever #5 clk = ~clk;
     end
-endmodule
-
-// JK Flip-Flop – Dataflow Style
-module jk_ff_dataflow (
-    input j, k, clk, reset,
-    output reg q
-);
-    always @(posedge clk or posedge reset) begin
-        if (reset)
-            q <= 1'b0;
-        else begin
-            case ({j, k})
-                2'b00: q <= q;
-                2'b01: q <= 1'b0;
-                2'b10: q <= 1'b1;
-                2'b11: q <= ~q;
-            endcase
-        end
-    end
-endmodule
-
-// T Flip-Flop – Dataflow Style
-module t_ff_dataflow (
-    input t, clk, reset,
-    output reg q
-);
-    always @(posedge clk or posedge reset) begin
-        if (reset)
-            q <= 1'b0;
-        else if (t)
-            q <= ~q;
-    end
-endmodule
-
-// D Flip-Flop – Structural Style
-module d_ff_structural (
-    input d, clk, reset,
-    output q
-);
-    wire nq, d_int;
-    not (nq, d);
     
-    and (d_int, d, clk);
-    and (nq_int, nq, clk);
-    
-    nor (q, nq_int, reset);
-    nor (nq, d_int, reset);
-endmodule
-
-// SR Flip-Flop – Structural Style
-module sr_ff_structural (
-    input s, r, clk, reset,
-    output q
-);
-    wire nq;
-    
-    nor (q, s, nq);
-    nor (nq, r, q);
-endmodule
-
-// JK Flip-Flop – Structural Style
-module jk_ff_structural (
-    input j, k, clk, reset,
-    output q
-);
-    wire j_int, k_int, q_int, nq_int;
-    
-    not (j_int, j);
-    not (k_int, k);
-    
-    and (q_int, j, clk);
-    and (nq_int, k, clk);
-    
-    nor (q, q_int, nq_int);
-    nor (nq, nq_int, q_int);
-endmodule
-
-// T Flip-Flop – Structural Style
-module t_ff_structural (
-    input t, clk, reset,
-    output q
-);
-    wire t_int, nq_int;
-    
-    not (t_int, t);
-    
-    and (q_int, t, clk);
-    and (nq_int, t_int, clk);
-    
-    nor (q, nq_int, reset);
-    nor (nq, q_int, reset);
-endmodule
-
-// D Flip-Flop – Behavioural Style
-module d_ff_behavioural (
-    input d, clk, reset,
-    output reg q
-);
-    always @(posedge clk or posedge reset) begin
-        if (reset)
-            q <= 1'b0;
-        else
-            q <= d;
-    end
-endmodule
-
-// SR Flip-Flop – Behavioural Style
-module sr_ff_behavioural (
-    input s, r, clk, reset,
-    output reg q
-);
-    always @(posedge clk or posedge reset) begin
-        if (reset)
-            q <= 1'b0;
-        else if (s && !r)
-            q <= 1'b1;
-        else if (!s && r)
-            q <= 1'b0;
-    end
-endmodule
-
-// JK Flip-Flop – Behavioural Style
-module jk_ff_behavioural (
-    input j, k, clk, reset,
-    output reg q
-);
-    always @(posedge clk or posedge reset) begin
-        if (reset)
-            q <= 1'b0;
-        else begin
-            case ({j, k})
-                2'b00: q <= q;
-                2'b01: q <= 1'b0;
-                2'b10: q <= 1'b1;
-                2'b11: q <= ~q;
-            endcase
-        end
-    end
-endmodule
-
-// T Flip-Flop – Behavioural Style
-module t_ff_behavioural (
-    input t, clk, reset,
-    output reg q
-);
-    always @(posedge clk or posedge reset) begin
-        if (reset)
-            q <= 1'b0;
-        else if (t)
-            q <= ~q;
+    initial begin
+        reset = 1; d = 0;
+        #10 reset = 0;
+        #10 d = 1;
+        #10 d = 0;
+        #10 $finish;
     end
 endmodule
 
@@ -948,6 +816,23 @@ module tristate_buffer (
     end
 endmodule
 
+// Testbench for Tristate Buffer
+module tb_tristate_buffer;
+    reg a, enable;
+    wire y;
+    
+    tristate_buffer uut (a, enable, y);
+    
+    initial begin
+        enable = 0;
+        a = 1;
+        #10 enable = 1;
+        #10 a = 0;
+        #10 enable = 0;
+        #10 $finish;
+    end
+endmodule
+
 // 34. Tristate Inverter
 module tristate_inverter (
     input a, enable,
@@ -958,6 +843,23 @@ module tristate_inverter (
             y = ~a;
         else
             y = 1'bz;  // High impedance when not enabled
+    end
+endmodule
+
+// Testbench for Tristate Inverter
+module tb_tristate_inverter;
+    reg a, enable;
+    wire y;
+    
+    tristate_inverter uut (a, enable, y);
+    
+    initial begin
+        enable = 0;
+        a = 1;
+        #10 enable = 1;
+        #10 a = 0;
+        #10 enable = 0;
+        #10 $finish;
     end
 endmodule
 
@@ -974,6 +876,27 @@ module d_ff_sync_reset (
     end
 endmodule
 
+// Testbench for FFs with Synchronous Reset
+module tb_d_ff_sync_reset;
+    reg d, clk, reset;
+    wire q;
+    
+    d_ff_sync_reset uut (d, clk, reset, q);
+    
+    initial begin
+        clk = 0;
+        forever #5 clk = ~clk;
+    end
+    
+    initial begin
+        reset = 1; d = 0;
+        #10 reset = 0;
+        #10 d = 1;
+        #10 d = 0;
+        #10 $finish;
+    end
+endmodule
+
 // 36. FFs with Asynchronous Reset
 module d_ff_async_reset (
     input d, clk, reset,
@@ -987,7 +910,30 @@ module d_ff_async_reset (
     end
 endmodule
 
+// Testbench for FFs with Asynchronous Reset
+module tb_d_ff_async_reset;
+    reg d, clk, reset;
+    wire q;
+    
+    d_ff_async_reset uut (d, clk, reset, q);
+    
+    initial begin
+        clk = 0;
+        forever #5 clk = ~clk;
+    end
+    
+    initial begin
+        reset = 1; d = 0;
+        #10 reset = 0;
+        #10 d = 1;
+        #10 d = 0;
+        #10 $finish;
+    end
+endmodule
+
 // 37. Enabled FFs and Latches
+
+// Enabled FF
 module enabled_ff (
     input d, clk, enable,
     output reg q
@@ -998,6 +944,28 @@ module enabled_ff (
     end
 endmodule
 
+// Testbench for Enabled FF
+module tb_enabled_ff;
+    reg d, clk, enable;
+    wire q;
+    
+    enabled_ff uut (d, clk, enable, q);
+    
+    initial begin
+        clk = 0;
+        forever #5 clk = ~clk;
+    end
+    
+    initial begin
+        enable = 0; d = 0;
+        #10 enable = 1;
+        #10 d = 1;
+        #10 enable = 0;
+        #10 $finish;
+    end
+endmodule
+
+// Enabled Latch
 module enabled_latch (
     input d, enable,
     output reg q
@@ -1005,5 +973,21 @@ module enabled_latch (
     always @ (d or enable) begin
         if (enable)
             q = d;
+    end
+endmodule
+
+// Testbench for Enabled Latch
+module tb_enabled_latch;
+    reg d, enable;
+    wire q;
+    
+    enabled_latch uut (d, enable, q);
+    
+    initial begin
+        enable = 0; d = 0;
+        #10 enable = 1;
+        #10 d = 1;
+        #10 enable = 0;
+        #10 $finish;
     end
 endmodule
