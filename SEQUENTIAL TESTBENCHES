@@ -1,0 +1,38 @@
+SEQUENTIAL TESTBENCHES
+
+module testbench;
+
+// Declare inputs and outputs for the modules
+reg clk, reset, d, s, r, j, k, t, en, up;
+wire q, qn, out;
+wire [3:0] count;
+
+// Clock generation
+always begin
+    clk = ~clk;
+    #5;
+end
+
+// Testbench for D Latch
+initial begin
+    clk = 0;
+    reset = 0;
+    d = 0;
+    s = 0;
+    r = 0;
+    j = 0;
+    k = 0;
+    t = 0;
+    en = 1;
+    up = 0;
+    
+    // Test D Latch
+    d = 1;
+    #10;
+    d = 0;
+    #10;
+    reset = 1;
+    #10;
+    reset = 0;
+end
+endmodule
